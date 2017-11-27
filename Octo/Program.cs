@@ -25,7 +25,8 @@ namespace Octo
 
             var gitclient = new GitHubClient(new Octokit.ProductHeaderValue("pwilq"));
 
-
+            var tokenAuth = new Credentials("e62323926ab394bca820c29707ebad282042cb62");
+            gitclient.Credentials = tokenAuth;
 
             var user = await gitclient.User.Get("pwilq");
 
@@ -46,21 +47,16 @@ namespace Octo
 
             foreach (var com in commits)
             {
-                
                 var commit = await gitclient.Repository.Commit.Get("pwilq", "Octo", com.Sha);
                 var files = commit.Files;
                 
                 foreach (var f in files)
                 {
-                    Console.WriteLine(f.Filename);
+                    Console.WriteLine("User: " + commit.Author.Login.ToString() + " File: " + f.Filename);
                 }
             }
-
-
+            
             Console.ReadKey();
-
-
-
 
         }
     }
