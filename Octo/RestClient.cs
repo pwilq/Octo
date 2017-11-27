@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Octo
 {
@@ -28,7 +29,23 @@ namespace Octo
             userAgent = "pwilq";
         }
 
-       
+
+        public void Deserialize(string strJSON)
+        {
+            try
+            {
+                var gitResponse = JsonConvert.DeserializeObject<dynamic>(strJSON);
+                Console.WriteLine(gitResponse); 
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message.ToString());
+            }
+            
+        }
+
+
         public string MakeRequest()
         {
             string strResponseValue = string.Empty;
