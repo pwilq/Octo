@@ -25,8 +25,7 @@ namespace Octo
 
             var gitclient = new GitHubClient(new Octokit.ProductHeaderValue("pwilq"));
 
-            var tokenAuth = new Credentials("e62323926ab394bca820c29707ebad282042cb62");
-            gitclient.Credentials = tokenAuth;
+
 
             var user = await gitclient.User.Get("pwilq");
 
