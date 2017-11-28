@@ -20,20 +20,13 @@ namespace Octo
             
             string strResponse = string.Empty;
             strResponse = rClient.MakeRequest();
+            
+            List<GitJson> Commits = rClient.GetCommitsFromJson(strResponse);
 
-
-            //GitJson test = JsonConvert.DeserializeObject<GitJson>(strResponse);
-            dynamic test = JsonConvert.DeserializeObject(strResponse);
-
-
-            for (int i = 0; i < test.Count; i++)
+            Console.WriteLine(Commits.Count());
+            foreach (var com in Commits)
             {
-                Console.WriteLine("Typ: " + test[i].type);
-                if (test[i].type == "PushEvent") {
-                    Console.WriteLine("Commits: " + test[i].payload.commits.Count);
-                }
-                //Console.WriteLine("Id: " + test[i].id);
-                //Console.WriteLine("Commits: " + test[i].payload.commits.Count);
+                Console.WriteLine("Autor: " + com.Author + " Data: " + com.Created_at + " Opis: " + com.Message);
             }
 
             Console.ReadKey();
@@ -42,6 +35,9 @@ namespace Octo
             //ProcessRepositories().Wait();
             
         }
+
+
+
         private static async Task ProcessRepositories()
         {
 

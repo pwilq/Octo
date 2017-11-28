@@ -22,6 +22,8 @@ namespace Octo
         private string oAuthtoken { get; set; }
         private string userAgent { get; set; }
 
+        List<GitJson> J = new List<GitJson>();
+
         public RestClient()
         {
             endPoint = string.Empty;
@@ -35,17 +37,32 @@ namespace Octo
             try
             {
                 var gitResponse = JsonConvert.DeserializeObject<dynamic>(strJSON);
-                Console.WriteLine(gitResponse); 
-
             }
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message.ToString());
             }
-            
         }
 
 
+        public List<GitJson> GetCommitsFromJson(string _json)
+        {
+            dynamic _jsonDes = JsonConvert.DeserializeObject(_json);
+
+            for (int i = 0; i < _jsonDes.Count; i++)
+            {
+                if (_jsonDes[i].type == "PushEvent")
+                {
+                    for (int j = 0; j < _jsonDes[i].payload.commits.Count; j++)
+                    {
+                        J.Add(new GitJson((string)_jsonDes[i].payload.commits[j].author.name, (string)_jsonDes[i].payload.commits[j].message, (long)_jsonDes[i].payload.push_id, (string)_jsonDes[i].created_at));
+                    }
+                }
+            }
+            return J;
+        }
+
+        
         public string MakeRequest()
         {
             string strResponseValue = string.Empty;
@@ -72,9 +89,7 @@ namespace Octo
                     }
                 }
             }
-
             return strResponseValue;
-            
         }
     }
 }
