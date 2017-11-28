@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace Octo
 {
@@ -14,19 +15,34 @@ namespace Octo
 
         public static void Main(string[] args)
         {
+            RestClient rClient = new RestClient();
+            rClient.endPoint = "https://api.github.com/repos/pwilq/octo/events";
+            
+            string strResponse = string.Empty;
+            strResponse = rClient.MakeRequest();
+            
+            List<GitJson> Commits = rClient.GetCommitsFromJson(strResponse);
 
-            Console.WriteLine("Hello Dev!");
-            ProcessRepositories().Wait();
+            Console.WriteLine(Commits.Count());
+            foreach (var com in Commits)
+            {
+                Console.WriteLine("Autor: " + com.Author + " Data: " + com.Created_at + " Opis: " + com.Message);
+            }
 
+            Console.ReadKey();
 
+            //Console.WriteLine("Hello Dev!");
+            //ProcessRepositories().Wait();
+            
         }
+
+
+
         private static async Task ProcessRepositories()
         {
 
             var gitclient = new GitHubClient(new Octokit.ProductHeaderValue("pwilq"));
-
-
-
+            
             var user = await gitclient.User.Get("pwilq");
 
             Console.WriteLine("Username: {0}; PublicRepo {1}; Url: {2}", user.Name, user.PublicRepos, user.Url);
