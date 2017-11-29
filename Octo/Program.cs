@@ -24,9 +24,36 @@ namespace Octo
             List<GitJson> Commits = rClient.GetCommitsFromJson(strResponse);
 
             Console.WriteLine(Commits.Count());
-            foreach (var com in Commits)
+            //foreach (var com in Commits)
+            //{
+            //    Console.WriteLine("Autor: " + com.Author + " Data: " + com.Created_at + " Opis: " + com.Message);
+            //}
+
+            List<GitJson> SortedList = Commits.OrderBy(o => o.Push_id).ToList();
+
+
+
+            foreach (var com in SortedList)
             {
-                Console.WriteLine("Autor: " + com.Author + " Data: " + com.Created_at + " Opis: " + com.Message);
+                Console.WriteLine("Autor: " + com.Author + " Data: " + com.Created_at + " ID: " + com.Push_id);
+            }
+
+            var DistinctList = SortedList.Select(x => x.Author).Distinct();
+
+            Console.WriteLine("Distict values");
+            foreach (var com in DistinctList)
+            {
+                
+                Console.WriteLine("Autor: " + com );
+            }
+
+            Console.WriteLine("Searched values");
+            var EqualList = SortedList.Select(s => s.Author.Equals("pwilq"));
+
+            foreach (var com in EqualList)
+            {
+
+                Console.WriteLine("Autor: " + com);
             }
 
             Console.ReadKey();
