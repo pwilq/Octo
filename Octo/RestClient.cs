@@ -55,7 +55,7 @@ namespace Octo
                 {
                     for (int j = 0; j < _jsonDes[i].payload.commits.Count; j++)
                     {
-                        J.Add(new GitJson((string)_jsonDes[i].payload.commits[j].author.name, (string)_jsonDes[i].payload.commits[j].message, (long)_jsonDes[i].payload.push_id, (string)_jsonDes[i].created_at));
+                        J.Add(new GitJson((string)_jsonDes[i].payload.commits[j].author.name, (string)_jsonDes[i].payload.commits[j].message, (long)_jsonDes[i].payload.push_id, (string)_jsonDes[i].created_at.ToString("yyyy/MM/dd")));
                     }
                 }
             }

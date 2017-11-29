@@ -13,6 +13,7 @@ namespace Octo
         public long Push_id { get; private set; }
         public string Created_at { get; private set; }
 
+
         public GitJson(string _author, string _message, long _push_id, string _created_at)
         {
             this.Author = _author;

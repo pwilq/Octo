@@ -17,10 +17,11 @@ namespace Octo
         {
             RestClient rClient = new RestClient();
             rClient.endPoint = "https://api.github.com/repos/pwilq/octo/events";
-            
+
             string strResponse = string.Empty;
+
             strResponse = rClient.MakeRequest();
-            
+
             List<GitJson> Commits = rClient.GetCommitsFromJson(strResponse);
 
             Console.WriteLine(Commits.Count());
@@ -29,7 +30,7 @@ namespace Octo
             //    Console.WriteLine("Autor: " + com.Author + " Data: " + com.Created_at + " Opis: " + com.Message);
             //}
 
-            List<GitJson> SortedList = Commits.OrderBy(o => o.Push_id).ToList();
+            List<GitJson> SortedList = Commits.OrderBy(o => o.Created_at).ToList();
 
 
 
@@ -38,23 +39,62 @@ namespace Octo
                 Console.WriteLine("Autor: " + com.Author + " Data: " + com.Created_at + " ID: " + com.Push_id);
             }
 
-            var DistinctList = SortedList.Select(x => x.Author).Distinct();
 
-            Console.WriteLine("Distict values");
-            foreach (var com in DistinctList)
+            // commity po użytkowniku
+            var DistinctUser = SortedList.Select(x => x.Author).Distinct();
+            var DistinctDate = SortedList.Select(x => x.Created_at).Distinct();
+
+
+            foreach (var ddates in DistinctDate)
             {
-                
-                Console.WriteLine("Autor: " + com );
+                foreach (var duser in DistinctUser)
+                {
+                    var CommitsByDate = from user in Commits
+                                        where user.Author == duser && user.Created_at == ddates
+                                        select user;
+
+                    Console.WriteLine("Dnia: " + ddates + " user: " + duser + " popełnił commitów: " + CommitsByDate.Count());
+                }
             }
 
-            Console.WriteLine("Searched values");
-            var EqualList = SortedList.Select(s => s.Author.Equals("pwilq"));
+            var startDate = DateTime.Parse(SortedList[0].Created_at);
+            var curentDate = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd"));
+            var totalDays = (curentDate - startDate).TotalDays;
 
-            foreach (var com in EqualList)
+
+            Console.WriteLine();
+
+            // Średnia ilość commmitów puer user od dnia rozpoczęcia
+            foreach (var user in DistinctUser)
             {
+                var CommitsByUser = from com in Commits
+                                    where com.Author == user
+                                    select com;
 
-                Console.WriteLine("Autor: " + com);
+                Console.WriteLine("User: " + user + " popełnił commitów: " + CommitsByUser.Count()/totalDays);
+
             }
+
+            
+
+
+            //var DistinctList = SortedList.Select(x => x.Author).Distinct();
+
+            //Console.WriteLine("Distict values");
+            //foreach (var com in DistinctList)
+            //{
+
+            //    Console.WriteLine("Autor: " + com );
+            //}
+
+            //Console.WriteLine("Searched values");
+            //var EqualList = SortedList.Select(s => s.Author.Equals("pwilq"));
+
+            //foreach (var com in EqualList)
+            //{
+
+            //    Console.WriteLine("Autor: " + com);
+            //}
 
             Console.ReadKey();
 
