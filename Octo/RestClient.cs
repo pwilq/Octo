@@ -70,7 +70,6 @@ namespace Octo
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(endPoint);
             request.Method = httpMethod.ToString();
             request.UserAgent = userAgent;
-            //request.Headers.Add(HttpRequestHeader.Authorization, oAuthtoken);
              
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
