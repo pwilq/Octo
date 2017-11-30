@@ -9,16 +9,11 @@ using Newtonsoft.Json;
 
 namespace Octo
 {
-    public enum httpVerb
-    {
-        GET,
-        POST
-    }
 
     class RestClient
     {
         public string endPoint { get; set; }
-        public httpVerb httpMethod { get; set; }
+        public string httpMethod { get; set; }
         private string oAuthtoken { get; set; }
         private string userAgent { get; set; }
 
@@ -26,11 +21,10 @@ namespace Octo
 
         public RestClient()
         {
-            endPoint = string.Empty;
-            httpMethod = httpVerb.GET;
+            endPoint = "https://api.github.com/repos/pwilq/octo/events";
+            httpMethod = "GET";
             userAgent = "pwilq";
         }
-
 
         public void Deserialize(string strJSON)
         {
@@ -43,7 +37,6 @@ namespace Octo
                 Console.WriteLine(ex.Message.ToString());
             }
         }
-
 
         public List<GitJson> GetCommitsFromJson(string _json)
         {
@@ -61,7 +54,6 @@ namespace Octo
             }
             return J;
         }
-
         
         public string MakeRequest()
         {

@@ -1,5 +1,4 @@
-﻿using Octokit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,51 +15,23 @@ namespace Octo
         public static void Main(string[] args)
         {
             RestClient rClient = new RestClient();
-            rClient.endPoint = "https://api.github.com/repos/pwilq/octo/events";
+            GitJson services = new GitJson();
 
             string strResponse = string.Empty;
-
             strResponse = rClient.MakeRequest();
 
-            List<GitJson> Commits = rClient.GetCommitsFromJson(strResponse);
-            List<GitJson> SortedList = Commits.OrderBy(o => o.Created_at).ToList();
+            List<GitJson> GitData = rClient.GetCommitsFromJson(strResponse);
+
+            //Commity użytkowników w poszczególnych dniach
+            List<GitJson> CommitsData = services.CommitsPerDay(GitData);
+            //Console.WriteLine(CommitsData.Count());
 
 
-            // commity po użytkowniku
-            var DistinctUser = SortedList.Select(x => x.Author).Distinct();
-            var DistinctDate = SortedList.Select(x => x.Created_at).Distinct();
+            //Średnia ilość commmitów per user od dnia rozpoczęcia
+            List<GitJson> CommitsAvg = services.CommitsAvg(GitData);
+            //Console.WriteLine(CommitsAvg.Count());
 
-
-            foreach (var ddates in DistinctDate)
-            {
-                foreach (var duser in DistinctUser)
-                {
-                    var CommitsByDate = from user in Commits
-                                        where user.Author == duser && user.Created_at == ddates
-                                        select user;
-
-                    Console.WriteLine("Dnia: " + ddates + " user: " + duser + " popełnił commitów: " + CommitsByDate.Count());
-                }
-            }
-
-            var startDate = DateTime.Parse(SortedList[0].Created_at);
-            var curentDate = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd"));
-            var totalDays = (curentDate - startDate).TotalDays;
-
-
-            Console.WriteLine();
-
-            // Średnia ilość commmitów puer user od dnia rozpoczęcia
-            foreach (var user in DistinctUser)
-            {
-                var CommitsByUser = from com in Commits
-                                    where com.Author == user
-                                    select com;
-
-                Console.WriteLine("User: " + user + " popełnił commitów: " + CommitsByUser.Count()/totalDays);
-
-            }
-
+            
             Console.ReadKey();
             
         }
